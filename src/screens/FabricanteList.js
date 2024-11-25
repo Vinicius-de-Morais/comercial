@@ -31,7 +31,7 @@ const FabricanteList = ({ navigation }) => {
 
   const renderFabricante = ({ item }) => (
     <View style={styles.item}>
-      <Text style={styles.text}>{item.nomeFantasia}</Text>  {}
+      <Text style={styles.text}>{item.nomeFantasia}</Text> 
       <Button title="Editar" onPress={() => navigation.navigate('Novo Fabricante', { fabricante: item })} />
       <Button title="Excluir" onPress={() => deleteFabricante(item.id)} color="red" />
     </View>
