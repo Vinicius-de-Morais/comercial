@@ -1,4 +1,5 @@
 import React from 'react';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -12,53 +13,66 @@ import ProdutoForm from '../screens/ProdutoForm';
 import VendaList from '../screens/VendasList';
 import VendaForm from '../screens/VendasForm';
 
-// Criando o Stack Navigator
+// Criando navegadores
+const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
+// Navegação de listas (Drawer)
+const DrawerNavigator = () => {
+  return (
+    <Drawer.Navigator initialRouteName="Fabricantes">
+      <Drawer.Screen 
+        name="Fabricantes" 
+        component={FabricanteList} 
+        options={{ title: 'Lista de Fabricantes' }} 
+      />
+      <Drawer.Screen 
+        name="Grupos" 
+        component={GrupoList} 
+        options={{ title: 'Lista de Grupos' }} 
+      />
+      <Drawer.Screen 
+        name="Produtos" 
+        component={ProdutoList} 
+        options={{ title: 'Lista de Produtos' }} 
+      />
+      <Drawer.Screen 
+        name="Vendas" 
+        component={VendaList} 
+        options={{ title: 'Lista de Vendas' }} 
+      />
+    </Drawer.Navigator>
+  );
+};
+
+// Navegação principal (Stack)
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Fabricantes">
-        <Stack.Screen 
-          name="Fabricantes" 
-          component={FabricanteList} 
-          options={{ title: 'Lista de Fabricantes' }} 
-        />
+      <Stack.Navigator initialRouteName="Drawer" screenOptions={{ headerShown: false }}>
+        {/* Drawer Navigator */}
+        <Stack.Screen name="Drawer" component={DrawerNavigator} />
+
+        {/* Rotas de cadastro */}
         <Stack.Screen 
           name="Novo Fabricante" 
           component={FabricanteForm} 
-          options={{ title: 'Cadastro de Fabricante' }} 
-        />
-        <Stack.Screen 
-          name="Grupos" 
-          component={GrupoList} 
-          options={{ title: 'Lista de Grupos' }} 
+          options={{ title: 'Cadastro de Fabricante', headerShown: true }}
         />
         <Stack.Screen 
           name="Novo Grupo" 
           component={GrupoForm} 
-          options={{ title: 'Cadastro de Grupo' }} 
-        />
-        <Stack.Screen 
-          name="Produtos" 
-          component={ProdutoList} 
-          options={{ title: 'Lista de Produtos' }} 
+          options={{ title: 'Cadastro de Grupo', headerShown: true }}
         />
         <Stack.Screen 
           name="Novo Produto" 
           component={ProdutoForm} 
-          options={{ title: 'Cadastro de Produto' }} 
-        />
-
-        <Stack.Screen 
-          name="Vendas" 
-          component={VendaList} 
-          options={{ title: 'Lista de Vendas' }} 
+          options={{ title: 'Cadastro de Produto', headerShown: true }}
         />
         <Stack.Screen 
           name="Nova Venda" 
           component={VendaForm} 
-          options={{ title: 'Cadastro de Venda' }} 
+          options={{ title: 'Cadastro de Venda', headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer>
