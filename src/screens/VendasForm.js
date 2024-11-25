@@ -13,7 +13,7 @@ const VendaForm = () => {
   useEffect(() => {
     const fetchProdutos = async () => {
       try {
-        const response = await axios.get('https://sua-api.com/produto/');
+        const response = await axios.get('http://localhost:8080/comercial/api/produto');
         const produtosData = response.data.map(produto => ({
           label: produto.nome,
           value: produto.id,
@@ -41,7 +41,7 @@ const VendaForm = () => {
   // Submissão do formulário
   const handleSubmit = async (values, { resetForm }) => {
     try {
-      await axios.post('https://sua-api.com/venda/novo', values);
+      await axios.post('http://localhost:8080/comercial/api/venda/novo', values);
       Alert.alert('Sucesso', 'Venda salva com sucesso!');
       resetForm();
     } catch (error) {

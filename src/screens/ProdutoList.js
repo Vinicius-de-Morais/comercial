@@ -7,7 +7,7 @@ const ProdutoList = ({ navigation }) => {
 
   const fetchProdutos = async () => {
     try {
-      const response = await api.get('/produto/');
+      const response = await api.get('/produto');
       setProdutos(response.data);
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível carregar os produtos');
@@ -30,7 +30,7 @@ const ProdutoList = ({ navigation }) => {
 
   const renderProduto = ({ item }) => (
     <View style={styles.item}>
-      <Text style={styles.text}>{item.nome} - R$ {item.preco}</Text>
+      <Text style={styles.text}>{item.nome} - R$ {item.precoCompra}</Text>
       <Button title="Editar" onPress={() => navigation.navigate('Novo Produto', { produto: item })} />
       <Button title="Excluir" onPress={() => deleteProduto(item.id)} color="red" />
     </View>

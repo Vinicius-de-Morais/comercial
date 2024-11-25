@@ -7,7 +7,7 @@ const VendaList = ({ navigation }) => {
 
   const fetchVendas = async () => {
     try {
-      const response = await api.get('/venda/');
+      const response = await api.get('/venda');
       setVendas(response.data);
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível carregar as vendas');
@@ -16,7 +16,7 @@ const VendaList = ({ navigation }) => {
 
   const deleteVenda = async (id) => {
     try {
-      await api.get(`/venda/remover/${id}`);
+      await api.delete(`/venda/remover/${id}`);
       Alert.alert('Sucesso', 'Venda excluída!');
       fetchVendas();
     } catch (error) {

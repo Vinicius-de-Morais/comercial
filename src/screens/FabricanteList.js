@@ -7,16 +7,17 @@ const FabricanteList = ({ navigation }) => {
 
   const fetchFabricantes = async () => {
     try {
-      const response = await api.get('/fabricante/fabricanteIndex');
+      const response = await api.get('/fabricante');
       setFabricantes(response.data);
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível carregar os fabricantes');
     }
   };
+  
 
   const deleteFabricante = async (id) => {
     try {
-      await api.get(`/fabricante/deletar-fabricante/${id}`);
+      await api.delete(`/fabricante/remover/${id}`);
       Alert.alert('Sucesso', 'Fabricante excluído!');
       fetchFabricantes();
     } catch (error) {
@@ -30,11 +31,12 @@ const FabricanteList = ({ navigation }) => {
 
   const renderFabricante = ({ item }) => (
     <View style={styles.item}>
-      <Text style={styles.text}>{item.nome}</Text>
+      <Text style={styles.text}>{item.nomeFantasia}</Text>  {}
       <Button title="Editar" onPress={() => navigation.navigate('Novo Fabricante', { fabricante: item })} />
       <Button title="Excluir" onPress={() => deleteFabricante(item.id)} color="red" />
     </View>
   );
+  
 
   return (
     <View style={styles.container}>

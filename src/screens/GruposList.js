@@ -7,7 +7,7 @@ const GrupoList = ({ navigation }) => {
 
   const fetchGrupos = async () => {
     try {
-      const response = await api.get('/grupo/');
+      const response = await api.get('/grupo');
       setGrupos(response.data);
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível carregar os grupos');
@@ -16,7 +16,7 @@ const GrupoList = ({ navigation }) => {
 
   const deleteGrupo = async (id) => {
     try {
-      await api.get(`/grupo/remover/${id}`);
+      await api.delete(`/grupo/remover/${id}`);
       Alert.alert('Sucesso', 'Grupo excluído!');
       fetchGrupos();
     } catch (error) {
