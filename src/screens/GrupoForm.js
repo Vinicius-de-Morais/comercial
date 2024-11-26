@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, Alert } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import api from '../services/api';
 
-const GrupoForm = () => {
+const GrupoForm = ({ route, navigation }) => {
+  const [grupo, setGrupo] = useState(null);
+
+  // Verifica se 'grupoData' foi passado pelo parâmetro 'route'
+  const { grupo: grupoData } = route.params || {}; // Recebe os dados do grupo de edição
+
+  useEffect(() => {
+    if (grupoData) {
+      setGrupo(grupoData); // Preenche o formulário com os dados do grupo para edição
+    }
+  }, [grupoData]);
+
   const validationSchema = Yup.object().shape({
     nome: Yup.string().min(3, 'O nome do grupo deve ter pelo menos 3 caracteres').required('O nome do grupo é obrigatório'),
     descricao: Yup.string().required('A descrição é obrigatória'),
@@ -12,11 +23,19 @@ const GrupoForm = () => {
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
-      await api.post('/grupo/novo', values);
-      Alert.alert('Sucesso', 'Grupo salvo com sucesso!');
+      if (grupo) {
+        // Se o grupo já existe, faz PUT para atualizar
+        await api.put(`/grupo/atualizar/${grupo.id}`, values);
+        Alert.alert('Sucesso', 'Grupo atualizado com sucesso!');
+      } else {
+        // Se não existe, faz POST para criar um novo grupo
+        await api.post('/grupo/novo', values);
+        Alert.alert('Sucesso', 'Grupo salvo com sucesso!');
+      }
       resetForm();
+      navigation.goBack(); // Volta para a lista de grupos
     } catch (error) {
-      console.error('Erro ao salvar grupo:', error);
+      console.error('Erro ao salvar ou editar grupo:', error);
       Alert.alert('Erro', 'Não foi possível salvar o grupo. Tente novamente mais tarde.');
     }
   };
@@ -24,9 +43,9 @@ const GrupoForm = () => {
   return (
     <View style={styles.container}>
       <Formik
-        initialValues={{ 
-          nome: '', 
-          descricao: '' 
+        initialValues={{
+          nome: grupoData ? grupoData.nome : '',
+          descricao: grupoData ? grupoData.descricao : '',
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -55,7 +74,7 @@ const GrupoForm = () => {
             />
             {touched.descricao && errors.descricao && <Text style={styles.error}>{errors.descricao}</Text>}
 
-            <Button title="Salvar Grupo" onPress={handleSubmit} />
+            <Button title={grupo ? "Atualizar Grupo" : "Salvar Grupo"} onPress={handleSubmit} />
           </View>
         )}
       </Formik>

@@ -5,9 +5,13 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import api from '../services/api';
 
-const ProdutoForm = () => {
+const ProdutoForm = ({ route, navigation }) => {
   const [fabricantes, setFabricantes] = useState([]);
   const [grupos, setGrupos] = useState([]);
+  const [produto, setProduto] = useState(null);
+
+  // Verifica se 'produtoData' foi passado pelo parâmetro 'route'
+  const { produto: produtoData } = route.params || {}; // Recebe os dados do produto de edição
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,12 +22,16 @@ const ProdutoForm = () => {
           fabricantesData.data.map((f) => ({ label: f.nomeFantasia, value: f.id }))
         );
         setGrupos(gruposData.data.map((g) => ({ label: g.nome, value: g.id })));
+
+        if (produtoData) {
+          setProduto(produtoData); // Preenche o formulário com os dados do produto para edição
+        }
       } catch (error) {
         Alert.alert('Erro', 'Não foi possível carregar os dados');
       }
     };
     fetchData();
-  }, []);
+  }, [produtoData]);
 
   const validationSchema = Yup.object().shape({
     nome: Yup.string().required('O nome do produto é obrigatório'),
@@ -39,24 +47,30 @@ const ProdutoForm = () => {
   });
 
   const handleSubmit = async (values, { resetForm }) => {
-    console.log('Valores antes de enviar:', values); 
-
     try {
-
       const produtoData = {
         ...values,
         precoCompra: parseFloat(values.precoCompra),
         precoVenda: parseFloat(values.precoVenda),
         fabricante: { id: values.fabricanteId },
-        grupo: { id: values.grupoId }
+        grupo: { id: values.grupoId },
       };
 
-      const response = await api.post('/produto/novo', produtoData);
-      console.log('Produto salvo com sucesso:', response);
-      Alert.alert('Sucesso', 'Produto salvo com sucesso!');
+      let response;
+      if (produto) {
+        // Se o produto já existe, faz PUT para atualizar
+        response = await api.put(`/produto/atualizar/${produto.id}`, produtoData);
+        Alert.alert('Sucesso', 'Produto atualizado com sucesso!');
+      } else {
+        // Se não existe, faz POST para criar um novo produto
+        response = await api.post('/produto/novo', produtoData);
+        Alert.alert('Sucesso', 'Produto salvo com sucesso!');
+      }
+      console.log('Produto salvo/atualizado com sucesso:', response);
       resetForm();
+      navigation.goBack(); // Volta para a lista de produtos
     } catch (error) {
-      console.error('Erro ao salvar produto:', error);
+      console.error('Erro ao salvar ou editar produto:', error);
       Alert.alert('Erro', 'Não foi possível salvar o produto');
     }
   };
@@ -65,12 +79,12 @@ const ProdutoForm = () => {
     <View style={styles.container}>
       <Formik
         initialValues={{
-          nome: '',
-          descricao: '',
-          precoCompra: '',
-          precoVenda: '',
-          fabricanteId: '',
-          grupoId: '',
+          nome: produtoData ? produtoData.nome : '',
+          descricao: produtoData ? produtoData.descricao : '',
+          precoCompra: produtoData ? produtoData.precoCompra.toString() : '',
+          precoVenda: produtoData ? produtoData.precoVenda.toString() : '',
+          fabricanteId: produtoData ? produtoData.fabricante.id : '',
+          grupoId: produtoData ? produtoData.grupo.id : '',
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -135,7 +149,7 @@ const ProdutoForm = () => {
             />
             {touched.grupoId && errors.grupoId && <Text style={styles.error}>{errors.grupoId}</Text>}
 
-            <Button title="Salvar Produto" onPress={handleSubmit} />
+            <Button title={produto ? "Atualizar Produto" : "Salvar Produto"} onPress={handleSubmit} />
           </View>
         )}
       </Formik>

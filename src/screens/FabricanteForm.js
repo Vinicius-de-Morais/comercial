@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, Alert } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import api from '../services/api';
 
-const FabricanteForm = () => {
+const FabricanteForm = ({ route, navigation }) => {
+  const [fabricante, setFabricante] = useState(null);
+
+  // Verifique se 'fabricanteData' foi passado pelo parâmetro 'route'
+  const { fabricante: fabricanteData } = route.params || {}; // Recebe os dados do fabricante de edição
+
+  useEffect(() => {
+    if (fabricanteData) {
+      setFabricante(fabricanteData); // Preenche o formulário com os dados do fabricante para edição
+    }
+  }, [fabricanteData]);
+
   const validationSchema = Yup.object().shape({
     nomeFantasia: Yup.string().required('O nome fantasia é obrigatório'),
     razaoSocial: Yup.string().required('A razão social é obrigatória'),
@@ -20,13 +31,20 @@ const FabricanteForm = () => {
   });
 
   const handleSubmit = async (values, { resetForm }) => {
-    console.log('Valores enviados:', values);   
     try {
-      await api.post('/fabricante/novo', values);
-      Alert.alert('Sucesso', 'Fabricante salvo com sucesso!');
+      if (fabricante) {
+        // Se o fabricante já existe, faz PUT para atualizar
+        await api.put(`/fabricante/atualizar/${fabricante.id}`, values);
+        Alert.alert('Sucesso', 'Fabricante atualizado com sucesso!');
+      } else {
+        // Se não existe, faz POST para criar um novo fabricante
+        await api.post('/fabricante/novo', values);
+        Alert.alert('Sucesso', 'Fabricante salvo com sucesso!');
+      }
       resetForm();
+      navigation.goBack(); // Volta para a lista de fabricantes
     } catch (error) {
-      console.error('Erro ao salvar fabricante:', error);
+      console.error('Erro ao salvar ou editar fabricante:', error);
       Alert.alert('Erro', 'Não foi possível salvar o fabricante');
     }
   };
@@ -35,13 +53,13 @@ const FabricanteForm = () => {
     <View style={styles.container}>
       <Formik
         initialValues={{
-          nomeFantasia: '',
-          razaoSocial: '',
-          cnpj: '',
-          endereco: '',
-          telefone: '',
-          email: '',
-          vendedor: '',
+          nomeFantasia: fabricanteData ? fabricanteData.nomeFantasia : '',
+          razaoSocial: fabricanteData ? fabricanteData.razaoSocial : '',
+          cnpj: fabricanteData ? fabricanteData.cnpj : '',
+          endereco: fabricanteData ? fabricanteData.endereco : '',
+          telefone: fabricanteData ? fabricanteData.telefone : '',
+          email: fabricanteData ? fabricanteData.email : '',
+          vendedor: fabricanteData ? fabricanteData.vendedor : '',
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -136,7 +154,7 @@ const FabricanteForm = () => {
               <Text style={styles.error}>{errors.vendedor}</Text>
             )}
 
-            <Button title="Salvar Fabricante" onPress={handleSubmit} />
+            <Button title={fabricante ? "Atualizar Fabricante" : "Salvar Fabricante"} onPress={handleSubmit} />
           </View>
         )}
       </Formik>

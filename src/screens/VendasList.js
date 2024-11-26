@@ -33,8 +33,6 @@ const VendaList = ({ navigation }) => {
       <Text style={styles.text}>
         Produto: {item.produto?.nome} Preço de Venda: R$ {item.produto?.precoVenda?.toFixed(2)}
       </Text>
-      <Button title="Editar" onPress={() => navigation.navigate('Nova Venda', { venda: item })} />
-      <Button title="Excluir" onPress={() => deleteVenda(item.id)} color="red" />
     </View>
   );
   

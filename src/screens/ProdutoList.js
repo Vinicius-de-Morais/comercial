@@ -31,7 +31,7 @@ const ProdutoList = ({ navigation }) => {
   const renderProduto = ({ item }) => (
     <View style={styles.item}>
       <Text style={styles.text}>{item.nome} - R$ {item.precoCompra}</Text>
-      <Button title="Editar" onPress={() => navigation.navigate('Novo Produto', { produto: item })} />
+      <Button title="Editar" onPress={() => navigation.navigate('Editar Produto', { produto: item })} />
       <Button title="Excluir" onPress={() => deleteProduto(item.id)} color="red" />
     </View>
   );

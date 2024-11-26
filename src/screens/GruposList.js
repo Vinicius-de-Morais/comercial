@@ -31,7 +31,7 @@ const GrupoList = ({ navigation }) => {
   const renderGrupo = ({ item }) => (
     <View style={styles.item}>
       <Text style={styles.text}>{item.nome}</Text>
-      <Button title="Editar" onPress={() => navigation.navigate('Novo Grupo', { grupo: item })} />
+      <Button title="Editar" onPress={() => navigation.navigate('Editar Grupo', { grupo: item })} />
       <Button title="Excluir" onPress={() => deleteGrupo(item.id)} color="red" />
     </View>
   );
