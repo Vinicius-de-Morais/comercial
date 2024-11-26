@@ -16,7 +16,7 @@ const ProdutoList = ({ navigation }) => {
 
   const deleteProduto = async (id) => {
     try {
-      await api.get(`/produto/remover/${id}`);
+      await api.delete(`/produto/remover/${id}`);
       Alert.alert('Sucesso', 'Produto excluído!');
       fetchProdutos();
     } catch (error) {
