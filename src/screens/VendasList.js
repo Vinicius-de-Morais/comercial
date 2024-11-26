@@ -28,18 +28,19 @@ const VendaList = ({ navigation }) => {
     fetchVendas();
   }, []);
 
-  const renderVenda = ({ item }) => (
-    <View style={styles.item}>
-      <Text style={styles.text}>
-        Produto: {item.produto?.nome} {'\n'}
-        Preço de Venda: R$ {item.produto?.precoVenda?.toFixed(2)} {'\n'}
-        Quantidade: {item.quantidade}
-      </Text>
-      
-    </View>
-  );
-  
-  
+  const renderVenda = ({ item }) => {
+    const totalVenda = item.produto?.precoVenda * item.quantidade;
+    return (
+      <View style={styles.item}>
+        <Text style={styles.text}>
+          Produto: {item.produto?.nome} {'\n'}
+          Preço de Venda: R$ {item.produto?.precoVenda?.toFixed(2)} {'\n'}
+          Quantidade: {item.quantidade} {'\n'}
+          Valor Total: R$ {totalVenda?.toFixed(2)} {/* Exibe o valor total da venda */}
+        </Text>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>

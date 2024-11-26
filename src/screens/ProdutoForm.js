@@ -10,8 +10,7 @@ const ProdutoForm = ({ route, navigation }) => {
   const [grupos, setGrupos] = useState([]);
   const [produto, setProduto] = useState(null);
 
-  // Verifica se 'produtoData' foi passado pelo parâmetro 'route'
-  const { produto: produtoData } = route.params || {}; // Recebe os dados do produto de edição
+  const { produto: produtoData } = route.params || {};
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,7 +23,7 @@ const ProdutoForm = ({ route, navigation }) => {
         setGrupos(gruposData.data.map((g) => ({ label: g.nome, value: g.id })));
 
         if (produtoData) {
-          setProduto(produtoData); // Preenche o formulário com os dados do produto para edição
+          setProduto(produtoData);
         }
       } catch (error) {
         Alert.alert('Erro', 'Não foi possível carregar os dados');
@@ -68,7 +67,7 @@ const ProdutoForm = ({ route, navigation }) => {
       }
       console.log('Produto salvo/atualizado com sucesso:', response);
       resetForm();
-      navigation.goBack(); // Volta para a lista de produtos
+      navigation.goBack();
     } catch (error) {
       console.error('Erro ao salvar ou editar produto:', error);
       Alert.alert('Erro', 'Não foi possível salvar o produto');

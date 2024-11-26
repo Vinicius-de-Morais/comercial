@@ -8,7 +8,7 @@ const FabricanteForm = ({ route, navigation }) => {
   const [fabricante, setFabricante] = useState(null);
 
   // Verifique se 'fabricanteData' foi passado pelo parâmetro 'route'
-  const { fabricante: fabricanteData } = route.params || {}; // Recebe os dados do fabricante de edição
+  const { fabricante: fabricanteData } = route.params || {};
 
   useEffect(() => {
     if (fabricanteData) {

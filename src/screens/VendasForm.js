@@ -9,7 +9,7 @@ const VendaForm = () => {
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Carregar os produtos da API
+
   useEffect(() => {
     const fetchProdutos = async () => {
       try {
@@ -29,7 +29,7 @@ const VendaForm = () => {
     fetchProdutos();
   }, []);
 
-  // Validação do formulário com Yup
+
   const validationSchema = Yup.object().shape({
     produtoId: Yup.string().required('Selecione um produto'),
     quantidade: Yup.number()
@@ -38,13 +38,13 @@ const VendaForm = () => {
       .integer('A quantidade deve ser um número inteiro'),
   });
 
-  // Submissão do formulário
+
   const handleSubmit = async (values, { resetForm }) => {
-    // Criar o objeto de venda no formato esperado pelo backend
+  
     const vendaData = {
       quantidade: values.quantidade,
       produto: {
-        id: values.produtoId,  // Associar o produto com base no ID selecionado
+        id: values.produtoId,  
       },
     };
 
