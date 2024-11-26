@@ -12,7 +12,7 @@ const VendasChart = () => {
       },
     ],
   });
-
+  // pra subir
   const fetchVendas = async () => {
     try {
       const response = await api.get("/venda"); // Consome a mesma API
