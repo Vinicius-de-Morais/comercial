@@ -1,115 +1,135 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { LineChart, BarChart } from 'react-native-chart-kit';
+import { Dimensions } from 'react-native';
 import api from '../services/api';
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = Dimensions.get("window").width;
 
-const GraficoVendas = () => {
-  const [valoresMensais, setValoresMensais] = useState({
-    custo: [],
-    venda: [],
-    quantidadeComprada: [],
-    quantidadeVendida: [],
-  });
+const VendasChart = () => {
+  const [vendas, setVendas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchDadosMensais();
+    const fetchVendas = async () => {
+      try {
+        const response = await api.get('/venda');
+        setVendas(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Erro ao carregar vendas:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchVendas();
   }, []);
 
-  const fetchDadosMensais = async () => {
-    try {
-      const response = await api.get('/venda/mensal');
-      const data = response.data;
-      
-      const custo = data.map((item) => item.valorTotalCusto);
-      const venda = data.map((item) => item.valorTotalVenda);
-      const quantidadeComprada = data.map((item) => item.quantidadeTotalComprada);
-      const quantidadeVendida = data.map((item) => item.quantidadeTotalVendida);
-      
-      setValoresMensais({ custo, venda, quantidadeComprada, quantidadeVendida });
-    } catch (error) {
-      console.error('Erro ao buscar dados mensais:', error);
-    }
+  if (loading) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Carregando vendas...</Text>
+      </View>
+    );
+  }
+
+  // Processar dados de todas as vendas
+  const totalCusto = vendas.reduce((acc, venda) => acc + (venda.produto.custo * venda.quantidade), 0);
+  const totalVenda = vendas.reduce((acc, venda) => acc + (venda.produto.precoVenda * venda.quantidade), 0);
+  const totalQuantidadeComprada = vendas.reduce((acc, venda) => acc + venda.quantidade, 0);
+
+  const lineData = {
+    labels: ["Total"],
+    datasets: [
+      {
+        data: [totalCusto],
+        color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, // Red for cost
+        strokeWidth: 2,
+      },
+      {
+        data: [totalVenda],
+        color: (opacity = 1) => `rgba(0, 128, 0, ${opacity})`, // Green for sales
+        strokeWidth: 2,
+      },
+    ],
+    legend: ["Custo Total", "Venda Total"],
+  };
+
+  const barData = {
+    labels: ["Total"],
+    datasets: [
+      {
+        data: [totalQuantidadeComprada],
+      },
+    ],
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Relatório de Vendas - Ano Corrente</Text>
-
-      {/* Gráfico de Linha: Valores de Custo e Venda */}
-      <Text style={styles.chartTitle}>Valores de Custo e Venda Mensal</Text>
+    <View style={styles.container}>
+      <Text style={styles.chartTitle}>Gráfico de Linha: Custo vs. Venda</Text>
       <LineChart
-        data={{
-          labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-          datasets: [
-            { data: valoresMensais.custo, color: () => '#FF6384', strokeWidth: 2, label: 'Custo' },
-            { data: valoresMensais.venda, color: () => '#36A2EB', strokeWidth: 2, label: 'Venda' },
-          ],
-          legend: ['Custo', 'Venda'],
-        }}
-        width={screenWidth - 32}
+        data={lineData}
+        width={screenWidth}
         height={220}
-        chartConfig={chartConfig}
+        chartConfig={{
+          backgroundColor: "#e26a00",
+          backgroundGradientFrom: "#fb8c00",
+          backgroundGradientTo: "#ffa726",
+          decimalPlaces: 2,
+          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          style: {
+            borderRadius: 16,
+          },
+        }}
         bezier
-        style={styles.chart}
-      />
-
-      {/* Gráfico de Barras: Quantidade Comprada e Vendida */}
-      <Text style={styles.chartTitle}>Quantidade Comprada e Vendida Mensal</Text>
-      <BarChart
-        data={{
-          labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-          datasets: [
-            { data: valoresMensais.quantidadeComprada, color: () => '#FFCE56', label: 'Comprada' },
-            { data: valoresMensais.quantidadeVendida, color: () => '#4BC0C0', label: 'Vendida' },
-          ],
-          legend: ['Comprada', 'Vendida'],
+        style={{
+          marginVertical: 8,
+          borderRadius: 16,
         }}
-        width={screenWidth - 32}
-        height={220}
-        chartConfig={chartConfig}
-        style={styles.chart}
       />
-    </ScrollView>
-  );
-};
 
-const chartConfig = {
-  backgroundGradientFrom: '#fff',
-  backgroundGradientTo: '#fff',
-  color: (opacity = 1) => `rgba(0, 123, 255, ${opacity})`,
-  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-  strokeWidth: 2,
-  barPercentage: 0.5,
-  decimalPlaces: 2,
-  style: {
-    borderRadius: 16,
-  },
+      <Text style={styles.chartTitle}>Gráfico de Barras: Quantidade Total Vendida</Text>
+      <BarChart
+        data={barData}
+        width={screenWidth}
+        height={220}
+        chartConfig={{
+          backgroundColor: "#1cc910",
+          backgroundGradientFrom: "#1cc910",
+          backgroundGradientTo: "#2e7d32",
+          decimalPlaces: 0,
+          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          style: {
+            borderRadius: 16,
+          },
+        }}
+        style={{
+          marginVertical: 8,
+          borderRadius: 16,
+        }}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 16,
+    backgroundColor: '#fff',
   },
   chartTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginVertical: 8,
     textAlign: 'center',
-  },
-  chart: {
     marginVertical: 8,
-    borderRadius: 16,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
-export default GraficoVendas;
+export default VendasChart;
