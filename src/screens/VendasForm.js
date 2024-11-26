@@ -40,8 +40,16 @@ const VendaForm = () => {
 
   // Submissão do formulário
   const handleSubmit = async (values, { resetForm }) => {
+    // Criar o objeto de venda no formato esperado pelo backend
+    const vendaData = {
+      quantidade: values.quantidade,
+      produto: {
+        id: values.produtoId,  // Associar o produto com base no ID selecionado
+      },
+    };
+
     try {
-      await axios.post('http://localhost:8080/comercial/api/venda/novo', values);
+      await axios.post('http://localhost:8080/comercial/api/venda/novo', vendaData);
       Alert.alert('Sucesso', 'Venda salva com sucesso!');
       resetForm();
     } catch (error) {
