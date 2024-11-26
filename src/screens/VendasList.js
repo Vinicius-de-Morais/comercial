@@ -31,10 +31,14 @@ const VendaList = ({ navigation }) => {
   const renderVenda = ({ item }) => (
     <View style={styles.item}>
       <Text style={styles.text}>
-        Produto: {item.produto?.nome} Preço de Venda: R$ {item.produto?.precoVenda?.toFixed(2)}
+        Produto: {item.produto?.nome} {'\n'}
+        Preço de Venda: R$ {item.produto?.precoVenda?.toFixed(2)} {'\n'}
+        Quantidade: {item.quantidade}
       </Text>
+      
     </View>
   );
+  
   
 
   return (
