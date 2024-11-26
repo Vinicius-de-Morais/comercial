@@ -12,6 +12,7 @@ import ProdutoList from '../screens/ProdutoList';
 import ProdutoForm from '../screens/ProdutoForm';
 import VendaList from '../screens/VendasList';
 import VendaForm from '../screens/VendasForm';
+import VendasChart from '../screens/VendasChart';
 
 // Criando navegadores
 const Drawer = createDrawerNavigator();
@@ -40,6 +41,11 @@ const DrawerNavigator = () => {
         name="Vendas" 
         component={VendaList} 
         options={{ title: 'Lista de Vendas' }} 
+      />
+      <Drawer.Screen 
+        name="Gráfico de Vendas"
+        component={VendasChart}
+        options={{ title: 'Gráfico de Vendas' }} 
       />
     </Drawer.Navigator>
   );
