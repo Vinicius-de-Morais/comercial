@@ -43,9 +43,9 @@ const DrawerNavigator = () => {
         options={{ title: 'Lista de Vendas' }} 
       />
       <Drawer.Screen 
-        name="Relatório de Vendas"
+        name="Gráfico de Vendas"
         component={VendasChart}
-        options={{ title: 'Relatório de Vendas' }} 
+        options={{ title: 'Gráfico de Vendas' }} 
       />
     </Drawer.Navigator>
   );
