@@ -49,30 +49,73 @@ const DrawerNavigator = () => {
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Drawer" screenOptions={{ headerShown: false }}>
-        {/* Drawer Navigator */}
-        <Stack.Screen name="Drawer" component={DrawerNavigator} />
-
-        {/* Rotas de cadastro */}
+      <Stack.Navigator initialRouteName="Fabricantes">
+        {/* Fabricantes */}
+        <Stack.Screen 
+          name="Fabricantes" 
+          component={FabricanteList} 
+          options={{ title: 'Lista de Fabricantes' }} 
+        />
         <Stack.Screen 
           name="Novo Fabricante" 
           component={FabricanteForm} 
-          options={{ title: 'Cadastro de Fabricante', headerShown: true }}
+          options={{ title: 'Cadastro de Fabricante' }} 
+        />
+        <Stack.Screen 
+          name="Editar Fabricante" 
+          component={FabricanteForm} 
+          options={{ title: 'Editar Fabricante' }} 
+        />
+
+        {/* Grupos */}
+        <Stack.Screen 
+          name="Grupos" 
+          component={GrupoList} 
+          options={{ title: 'Lista de Grupos' }} 
         />
         <Stack.Screen 
           name="Novo Grupo" 
           component={GrupoForm} 
-          options={{ title: 'Cadastro de Grupo', headerShown: true }}
+          options={{ title: 'Cadastro de Grupo' }} 
+        />
+        <Stack.Screen 
+          name="Editar Grupo" 
+          component={GrupoForm} 
+          options={{ title: 'Editar Grupo' }} 
+        />
+
+        {/* Produtos */}
+        <Stack.Screen 
+          name="Produtos" 
+          component={ProdutoList} 
+          options={{ title: 'Lista de Produtos' }} 
         />
         <Stack.Screen 
           name="Novo Produto" 
           component={ProdutoForm} 
-          options={{ title: 'Cadastro de Produto', headerShown: true }}
+          options={{ title: 'Cadastro de Produto' }} 
+        />
+        <Stack.Screen 
+          name="Editar Produto" 
+          component={ProdutoForm} 
+          options={{ title: 'Editar Produto' }} 
+        />
+
+        {/* Vendas */}
+        <Stack.Screen 
+          name="Vendas" 
+          component={VendaList} 
+          options={{ title: 'Lista de Vendas' }} 
         />
         <Stack.Screen 
           name="Nova Venda" 
           component={VendaForm} 
-          options={{ title: 'Cadastro de Venda', headerShown: true }}
+          options={{ title: 'Cadastro de Venda' }} 
+        />
+        <Stack.Screen 
+          name="Editar Venda" 
+          component={VendaForm} 
+          options={{ title: 'Editar Venda' }} 
         />
       </Stack.Navigator>
     </NavigationContainer>
